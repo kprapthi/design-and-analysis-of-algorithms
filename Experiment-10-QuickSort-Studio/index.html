@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickSort Studio</title>
+<style>
+:root{
+  --bg:#07111f; --bg2:#0b1830; --panel:rgba(15,28,49,.82); --panel2:rgba(20,38,64,.72);
+  --line:rgba(148,163,184,.16); --text:#edf5ff; --muted:#91a5bf; --accent:#4f8cff;
+  --accent2:#7c5cff; --success:#2dd4a8; --warning:#f7b955; --danger:#ff6b81;
+  --shadow:0 24px 70px rgba(0,0,0,.32); --radius:20px;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 10% 0%,#18366a 0,transparent 34%),radial-gradient(circle at 100% 10%,#2c1f69 0,transparent 32%),linear-gradient(135deg,var(--bg),var(--bg2));}
+body{min-height:100vh;overflow:auto} button,input,textarea,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr;}
+.sidebar{padding:24px 18px;border-right:1px solid var(--line);background:rgba(5,14,27,.76);backdrop-filter:blur(22px);display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.brand{padding:4px 8px 12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:900;box-shadow:0 10px 28px rgba(79,140,255,.28)}
+.brand h1{font-size:20px;margin:12px 0 3px;letter-spacing:-.5px}.brand p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+.nav{display:grid;gap:7px}.nav-item{padding:11px 12px;border-radius:12px;color:#a8bad0;font-size:12px;font-weight:700;border:1px solid transparent}.nav-item.active{background:linear-gradient(90deg,rgba(79,140,255,.18),rgba(124,92,255,.08));border-color:rgba(79,140,255,.2);color:#fff}
+.side-card{margin-top:auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border-radius:16px;padding:14px}.side-card .mini{color:#6f86a3;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:800}.side-card strong{display:block;margin:6px 0;color:#fff;font-size:12px}.side-card span{font-size:10px;color:var(--muted);line-height:1.55}
+.main{padding:24px 28px 30px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.eyebrow{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;color:#7892b4;font-weight:900}.topbar h2{font-size:28px;margin:5px 0 0;letter-spacing:-1px}.topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}.toolbar{display:flex;gap:8px;align-items:center}.theme-select,.ghost,.primary{border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.055);color:#dce9f8;padding:9px 12px;font-size:11px;cursor:pointer;transition:.2s}.theme-select:hover,.ghost:hover{border-color:rgba(79,140,255,.45);background:rgba(255,255,255,.08)}.primary{background:linear-gradient(135deg,var(--accent),#6c63ff);border-color:transparent;color:#fff;font-weight:800;box-shadow:0 9px 24px rgba(79,140,255,.22)}.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.grid{display:grid;grid-template-columns:minmax(330px,.85fr) minmax(470px,1.45fr);gap:18px}.panel{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(20px);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.panel-head{padding:18px 20px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel-head h3{font-size:13px;margin:0}.panel-head p{font-size:10px;color:var(--muted);margin:4px 0 0}.step{width:28px;height:28px;border-radius:9px;background:rgba(79,140,255,.14);border:1px solid rgba(79,140,255,.24);color:#8db6ff;display:grid;place-items:center;font-size:11px;font-weight:900}
+.panel-body{padding:18px 20px}.label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}.label{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:#9bb0c9;font-weight:900}.helper{font-size:9px;color:#657b96}.input,textarea{width:100%;border:1px solid rgba(148,163,184,.17);background:rgba(3,12,25,.58);color:#eaf3ff;border-radius:13px;outline:none;transition:.2s}.input:focus,textarea:focus{border-color:rgba(79,140,255,.7);box-shadow:0 0 0 3px rgba(79,140,255,.09)}.input{height:42px;padding:0 12px}.price-area{height:180px;resize:vertical;padding:12px;font-family:"JetBrains Mono",Consolas,monospace;font-size:11px;line-height:1.65}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{border:1px solid rgba(148,163,184,.14);border-radius:999px;padding:5px 8px;color:#8ea4bf;background:rgba(255,255,255,.035);font-size:9px}.action-row{display:grid;grid-template-columns:1fr 1.25fr;gap:8px;margin-top:14px}.hint-box{margin-top:12px;border-radius:13px;background:linear-gradient(135deg,rgba(45,212,168,.08),rgba(79,140,255,.05));border:1px solid rgba(45,212,168,.14);padding:10px;color:#8db0b1;font-size:9px;line-height:1.5}.hint-box b{color:#c9f7e9}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:18px 20px 0}.stat{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:12px;min-width:0}.stat .s-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#7890ad;font-weight:900}.stat .s-value{font-size:18px;font-weight:900;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.blue{color:#84aeff}.purple{color:#a795ff}.green{color:#62e5c0}.orange{color:#ffd17b}
+.route-card{margin:14px 20px 0;padding:15px;border:1px solid rgba(79,140,255,.16);border-radius:15px;background:linear-gradient(135deg,rgba(79,140,255,.10),rgba(124,92,255,.055))}.route-card .r-label{font-size:8px;color:#7fa8e7;letter-spacing:1.2px;font-weight:900}.route{margin-top:7px;font-size:13px;font-weight:800;line-height:1.6;word-break:break-word}.route span{color:#6e87a5}.tabs{display:flex;gap:5px;padding:14px 20px 0}.tab{border:1px solid transparent;background:transparent;color:#7f95af;padding:8px 10px;border-radius:9px;cursor:pointer;font-size:10px;font-weight:800}.tab.active{background:rgba(79,140,255,.12);color:#b9d1f4;border-color:rgba(79,140,255,.17)}.tab-content{padding:0 20px 18px}.tab-panel{display:none}.tab-panel.active{display:block}.table-wrap{margin-top:10px;max-height:245px;overflow:auto;border:1px solid var(--line);border-radius:12px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th{position:sticky;top:0;background:#101f35;color:#91a8c3;text-align:left;padding:9px;font-size:8px;text-transform:uppercase;letter-spacing:.7px}.table td{padding:9px;border-top:1px solid rgba(148,163,184,.09);color:#d7e4f2}.table tr:hover td{background:rgba(79,140,255,.045)}.analysis{margin-top:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,.035);color:#91a5bf;font-size:10px;line-height:1.65}.analysis b{color:#e9f2ff}.bar-row{display:grid;grid-template-columns:100px 1fr 80px;gap:9px;align-items:center;margin:9px 0;font-size:9px;color:#9eb0c5}.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .45s ease}.empty{color:#637b98;font-size:10px;padding:20px 4px;text-align:center}
+.status{margin:14px 20px 0;padding:9px 11px;border-radius:11px;font-size:9px;font-weight:800;border:1px solid rgba(45,212,168,.16);background:rgba(45,212,168,.07);color:#75e2c4}.status.error{border-color:rgba(255,107,129,.18);background:rgba(255,107,129,.07);color:#ff9aaa}
+.footer{padding:20px 0 0;color:#5f7693;font-size:9px;text-align:right}.kbd{border:1px solid var(--line);border-bottom-color:#334b68;padding:2px 5px;border-radius:4px;color:#9bb0c8}
+@media(max-width:1050px){.app{grid-template-columns:78px 1fr}.sidebar{padding:18px 10px}.brand h1,.brand p,.nav-item span,.side-card{display:none}.brand{display:flex;justify-content:center}.grid{grid-template-columns:1fr}.main{padding:20px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.app{display:block}.sidebar{height:auto;position:relative;border-right:0;border-bottom:1px solid var(--line);padding:10px}.nav{display:none}.main{padding:14px}.topbar{align-items:flex-start;flex-direction:column}.toolbar{width:100%;flex-wrap:wrap}.stats{grid-template-columns:1fr 1fr}.topbar h2{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">Q</div>
+      <h1>QuickSort Studio</h1>
+      <p>Inventory Price Intelligence</p>
+    </div>
+    <div class="nav">
+      <div class="nav-item active">◈ <span>Optimizer</span></div>
+      <div class="nav-item">◌ <span>Benchmark Lab</span></div>
+      <div class="nav-item">◇ <span>Performance</span></div>
+    </div>
+    <div class="side-card">
+      <div class="mini">DAA Experiment 10</div>
+      <strong>Randomized Quick Sort</strong>
+      <span>Compare deterministic and randomized pivot selection on realistic inventory data patterns.</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Algorithm Performance Workspace</div>
+        <h2>Sort inventory prices intelligently.</h2>
+        <p>Use Quick Sort to rank prices, then benchmark how randomized pivot selection behaves.</p>
+      </div>
+      <div class="toolbar">
+        <select id="theme" class="theme-select" title="Change background theme">
+          <option value="midnight">Midnight</option><option value="ocean">Ocean</option><option value="aurora">Aurora</option><option value="slate">Slate</option>
+        </select>
+        <button class="ghost" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        <button class="primary" onclick="runAll()">▶ Run Analysis</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Inventory Input</h3><p>Enter product prices to create a sortable dataset.</p></div><div class="step">01</div></div>
+        <div class="panel-body">
+          <div class="label-row"><span class="label">Dataset name</span><span class="helper">Optional</span></div>
+          <input id="datasetName" class="input" value="Current Inventory Prices" placeholder="e.g. Laptop Store Prices">
+          <div style="height:14px"></div>
+          <div class="label-row"><span class="label">Product prices</span><span class="helper">Comma / space / newline separated</span></div>
+          <textarea id="prices" class="price-area" spellcheck="false">1299, 799, 1599, 499, 999, 749, 1899, 599, 1099, 899, 699, 1499, 449, 1299, 849</textarea>
+          <div class="chips"><span class="chip">Editable input</span><span class="chip">Ascending order</span><span class="chip">Randomized pivot</span></div>
+          <div class="action-row"><button class="ghost" onclick="loadExample()">↻ Load Example</button><button class="primary" onclick="sortPrices()">↗ Sort Prices</button></div>
+          <div class="hint-box"><b>Practical use:</b> Quickly arrange inventory prices from lowest to highest before reviewing or comparing products.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h3>Optimization Dashboard</h3><p>Results are generated from your current input — nothing is hard-coded.</p></div><div class="step">02</div></div>
+        <div class="stats">
+          <div class="stat"><div class="s-label">Items</div><div id="items" class="s-value blue">—</div></div>
+          <div class="stat"><div class="s-label">DQS Comparisons</div><div id="dcomp" class="s-value purple">—</div></div>
+          <div class="stat"><div class="s-label">RQS Comparisons</div><div id="rcomp" class="s-value green">—</div></div>
+          <div class="stat"><div class="s-label">Faster Method</div><div id="faster" class="s-value orange">—</div></div>
+        </div>
+        <div id="status" class="status">● Ready — edit the prices and run the analysis.</div>
+        <div class="route-card"><div class="r-label">SORTED PRICE RANGE</div><div id="sortedPreview" class="route">Your sorted prices will appear here.</div></div>
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('result',this)">Sorted Result</button>
+          <button class="tab" onclick="showTab('benchmark',this)">Benchmark Lab</button>
+          <button class="tab" onclick="showTab('analysis',this)">Analysis</button>
+        </div>
+        <div class="tab-content">
+          <div id="result" class="tab-panel active">
+            <div class="table-wrap"><table class="table"><thead><tr><th>Rank</th><th>Sorted Price</th><th>Price Band</th></tr></thead><tbody id="resultBody"><tr><td colspan="3" class="empty">Run “Sort Prices” to see results.</td></tr></tbody></table></div>
+          </div>
+          <div id="benchmark" class="tab-panel">
+            <div class="label-row"><span class="label">Benchmark size</span><span class="helper">3,000 default • max 8,000</span></div>
+            <div style="display:flex;gap:8px;margin-top:7px"><input id="benchSize" class="input" type="number" min="100" max="8000" value="3000"><button class="primary" onclick="benchmark()">⚡ Benchmark</button></div>
+            <div id="benchTable" class="table-wrap"><table class="table"><thead><tr><th>Input Type</th><th>DQS Comps</th><th>DQS ms</th><th>RQS Comps</th><th>RQS ms</th></tr></thead><tbody id="benchBody"><tr><td colspan="5" class="empty">Run the benchmark to compare four input patterns.</td></tr></tbody></table></div>
+          </div>
+          <div id="analysis" class="tab-panel">
+            <div id="analysisText" class="analysis"><b>Performance analysis:</b> Run the benchmark to see how deterministic and randomized pivot selection respond to random, sorted, reverse, and nearly sorted inputs.</div>
+            <div id="bars"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="footer">QuickSort Studio • DAA Experiment 10 • <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to run analysis</div>
+  </main>
+</div>
+<script>
+let comparisons=0;
+const themes={
+  midnight:{bg:'#07111f',bg2:'#0b1830',accent:'#4f8cff',accent2:'#7c5cff'},
+  ocean:{bg:'#06151c',bg2:'#092b3b',accent:'#20a9d8',accent2:'#3b82f6'},
+  aurora:{bg:'#10101f',bg2:'#102d2a',accent:'#34d399',accent2:'#8b5cf6'},
+  slate:{bg:'#111827',bg2:'#1f2937',accent:'#94a3b8',accent2:'#64748b'}
+};
+function setTheme(name){const t=themes[name];document.documentElement.style.setProperty('--bg',t.bg);document.documentElement.style.setProperty('--bg2',t.bg2);document.documentElement.style.setProperty('--accent',t.accent);document.documentElement.style.setProperty('--accent2',t.accent2);localStorage.setItem('qs-theme',name)}
+document.getElementById('theme').addEventListener('change',e=>setTheme(e.target.value));
+const saved=localStorage.getItem('qs-theme')||'midnight';document.getElementById('theme').value=saved;setTheme(saved);
+
+// Original experiment logic, kept recognizable: partition + deterministic Quick Sort.
+function partition(arr,low,high){
+  const pivot=arr[high]; let i=low-1;
+  for(let j=low;j<high;j++){ comparisons++; if(arr[j]<=pivot){i++; [arr[i],arr[j]]=[arr[j],arr[i]];} }
+  [arr[i+1],arr[high]]=[arr[high],arr[i+1]]; return i+1;
+}
+function deterministicQuicksort(arr,low,high){
+  if(low<high){const pi=partition(arr,low,high); deterministicQuicksort(arr,low,pi-1); deterministicQuicksort(arr,pi+1,high);}
+}
+function randomizedQuicksort(arr,low,high){
+  if(low<high){const randIdx=Math.floor(Math.random()*(high-low+1))+low; [arr[randIdx],arr[high]]=[arr[high],arr[randIdx]]; const pi=partition(arr,low,high); randomizedQuicksort(arr,low,pi-1); randomizedQuicksort(arr,pi+1,high);}
+}
+function runTest(sortFn,arr){const a=arr.slice();comparisons=0;const start=performance.now();sortFn(a,0,a.length-1);const elapsed=performance.now()-start;return {comparisons,time:elapsed,sorted:a};}
+function parsePrices(){const raw=document.getElementById('prices').value.trim();if(!raw)throw new Error('Enter at least 3 product prices.');const nums=raw.split(/[\s,;]+/).map(Number);if(nums.some(n=>!Number.isFinite(n)))throw new Error('Every price must be a valid number.');if(nums.length<3)throw new Error('Enter at least 3 prices.');if(nums.length>8000)throw new Error('Use at most 8,000 prices for this desktop demo.');if(nums.some(n=>n<0))throw new Error('Prices cannot be negative.');return nums;}
+function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:2});}
+function setStatus(msg,error=false){const el=document.getElementById('status');el.textContent=(error?'● ':'● ')+msg;el.classList.toggle('error',error)}
+function loadExample(){document.getElementById('datasetName').value='Current Inventory Prices';document.getElementById('prices').value='1299, 799, 1599, 499, 999, 749, 1899, 599, 1099, 899, 699, 1499, 449, 1299, 849';setStatus('Example dataset loaded — ready to sort.');}
+function sortPrices(){try{const arr=parsePrices();const d=runTest(deterministicQuicksort,arr);const r=runTest(randomizedQuicksort,arr);document.getElementById('items').textContent=fmt(arr.length);document.getElementById('dcomp').textContent=fmt(d.comparisons);document.getElementById('rcomp').textContent=fmt(r.comparisons);document.getElementById('faster').textContent=(d.time<=r.time?'DQS':'RQS');document.getElementById('sortedPreview').innerHTML=r.sorted.slice(0,8).map((v,i)=>(i?' <span>→</span> ':'')+'₹'+fmt(v)).join('')+(r.sorted.length>8?' <span>→ …</span>':'');const body=document.getElementById('resultBody');body.innerHTML='';r.sorted.forEach((v,i)=>{const tr=document.createElement('tr');const band=v<=r.sorted[Math.floor(r.sorted.length*.33)]?'Budget':(v<=r.sorted[Math.floor(r.sorted.length*.66)]?'Standard':'Premium');tr.innerHTML=`<td>${i+1}</td><td><b>₹${fmt(v)}</b></td><td>${band}</td>`;body.appendChild(tr)});setStatus(`Sorted ${arr.length} prices successfully • Randomized Quick Sort completed in ${r.time.toFixed(3)} ms`);showTab('result',document.querySelector('.tab'));}catch(e){setStatus(e.message,true);alert(e.message)}}
+function benchmark(){try{let n=Math.floor(Number(document.getElementById('benchSize').value));if(!Number.isFinite(n)||n<100||n>8000)throw new Error('Benchmark size must be between 100 and 8,000.');const random=Array.from({length:n},()=>Math.floor(Math.random()*100000)+1);const sorted=Array.from({length:n},(_,i)=>i);const reverse=Array.from({length:n},(_,i)=>n-i);const nearly=Array.from({length:n},(_,i)=>i);for(let k=0;k<Math.floor(n/20);k++){const i=Math.floor(Math.random()*n),j=Math.floor(Math.random()*n);[nearly[i],nearly[j]]=[nearly[j],nearly[i]]}const cases=[['Random',random],['Sorted',sorted],['Reverse',reverse],['Nearly Sorted',nearly]];const results=[];for(const [name,data] of cases){const d=runTest(deterministicQuicksort,data);const r=runTest(randomizedQuicksort,data);results.push({name,d,r})}const body=document.getElementById('benchBody');body.innerHTML=results.map(x=>`<tr><td><b>${x.name}</b></td><td>${fmt(x.d.comparisons)}</td><td>${x.d.time.toFixed(2)}</td><td>${fmt(x.r.comparisons)}</td><td>${x.r.time.toFixed(2)}</td></tr>`).join('');const sortedCase=results[1];const reverseCase=results[2];const randomCase=results[0];document.getElementById('analysisText').innerHTML=`<b>Performance analysis:</b> For ${fmt(n)} items, deterministic Quick Sort uses the last element as the pivot. On already sorted or reverse-ordered data this can create highly unbalanced partitions and a large comparison count. Randomized Quick Sort selects a pivot position randomly before using the same partition routine, reducing its dependence on the original ordering. The exact time varies by machine because the benchmark measures the local runtime.`;const maxComp=Math.max(sortedCase.d.comparisons,sortedCase.r.comparisons,reverseCase.d.comparisons,reverseCase.r.comparisons,randomCase.d.comparisons);document.getElementById('bars').innerHTML=results.map(x=>`<div class="bar-row"><span>${x.name} · DQS</span><div class="bar"><div class="fill" style="width:${Math.max(3,100*x.d.comparisons/maxComp)}%"></div></div><span>${fmt(x.d.comparisons)}</span></div><div class="bar-row"><span>${x.name} · RQS</span><div class="bar"><div class="fill" style="width:${Math.max(3,100*x.r.comparisons/maxComp)}%"></div></div><span>${fmt(x.r.comparisons)}</span></div>`).join('');setStatus(`Benchmark complete • ${fmt(n)} items × 4 input patterns`);showTab('benchmark',document.querySelectorAll('.tab')[1]);}catch(e){setStatus(e.message,true);alert(e.message)}}
+function runAll(){sortPrices();benchmark();showTab('benchmark',document.querySelectorAll('.tab')[1]);}
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}}
+function toggleFullscreen(){if(!document.fullscreenElement){document.documentElement.requestFullscreen?.()}else{document.exitFullscreen?.()}}
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();runAll()}});
+</script>
+</body>
+</html>
